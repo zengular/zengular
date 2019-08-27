@@ -1,0 +1,47 @@
+ul.px-context-menu{
+  z-index: 100001;
+  display: none;
+  margin: 0;
+  padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: absolute;
+  border:1px solid #ddd;
+  box-shadow: 0px 20px 42px -26px rgba(0,0,0,0.75);
+  background-color:white;
+  border-bottom:0;
+
+  &.active{
+    display:block;
+  }
+
+  li{
+    list-style: none;
+    font-family: "Trebuchet MS";
+    border-bottom: 1px solid #dddddd;
+    color:#666;
+    line-height:30px;
+    padding: 0 50px 0 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    i{
+      padding-right: 10px;
+      color: #358ebc;
+      width: 20px;
+    }
+    &.disabled{
+      i{color:#aaa!important;}
+      color:#aaa;
+      cursor: not-allowed;
+    }
+    &:hover:not(.disabled){
+      i{color:white;}
+      color:white;
+      background-color: #358ebc;
+    }
+  }
+}

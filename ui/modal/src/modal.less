@@ -1,0 +1,140 @@
+@keyframes shake {
+	10%, 90% { transform: translate3d(-1px, 0, 0); }
+	20%, 80% { transform: translate3d(2px, 0, 0); }
+	30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+	40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+div.modal-wrapper{
+	position: fixed;
+	top:0;
+	left:0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10000;
+	background-color: rgba(0,0,0,.7);
+	align-items: center;
+	display:flex;
+	opacity: 0;
+	transition: opacity .4s;
+	&.visible{
+		opacity: 1;
+	}
+
+
+	>div{
+		min-width: 300px;
+		max-width: 650px;
+		background-color: white;
+		margin:0 auto;
+		box-shadow: 0 0 10px rgba(0,0,0,.5);
+		&.shake {
+			animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+			transform: translate3d(0, 0, 0);
+			backface-visibility: hidden;
+			perspective: 1000px;
+		}
+		>header{
+			font-size: 16px;
+			position: relative;
+			padding:10px 20px;
+			border-bottom: 1px solid #ddd;
+			color: #666;
+			font-family: Oswald, sans-serif;
+			.close{
+				cursor: pointer;
+				transition: all .4s;
+				position: absolute;
+				right: 10px;
+				width: 24px;
+				height:24px;
+				line-height:24px;
+				text-align: center;
+				&:hover{
+					transform: rotate(180deg);
+				}
+			}
+		}
+		>section{
+			&.frameless{
+				padding:0px;
+				overflow: scroll;
+				height: ~"calc(100% - 45px)";
+				position: relative;
+			}
+			padding:20px;
+			font-family: Rajdhani,sans-serif;
+			color: #333;
+			div.error{
+				color:darkred;
+				font-size:12px;
+				margin-bottom:6px;
+				a{
+					text-decoration: underline;
+					cursor:pointer;
+				}
+			}
+			&.buttontower+footer{
+				flex-direction: column;
+				button:not(:last-child){
+					margin-bottom:1px;
+				}
+			}
+		}
+		>footer{
+			display: flex;
+			align-items: stretch;
+			margin: 0 0 1px 1px;
+			button{
+				border:0;
+				font-family: Oswald, sans-serif;
+				font-size: 16px;
+				font-weight: 300;
+				padding:10px 20px;
+				color: #333;
+				background-color: #eee;
+				flex-grow: 1;
+				margin: 0 1px 0 0;
+				cursor: pointer;
+				&:hover{
+					background-color: #e6e6e6;
+				}
+				&.primary{
+					color: #fff;
+					background-color: #337ab7;
+					&:hover{
+						background-color: #286090;
+					}
+				}
+				&.success{
+					color: #fff;
+					background-color: #5cb85c;
+					&:hover{
+						background-color: #449d44;
+					}
+				}
+				&.info{
+					color: #fff;
+					background-color: #5bc0de;
+					&:hover{
+						background-color: #31b0d5;
+					}
+				}
+				&.warning{
+					color: #fff;
+					background-color: #f0ad4e;
+					&:hover{
+						background-color: #ec971f;
+					}
+				}
+				&.danger{
+					color: #fff;
+					background-color: #d9534f;
+					&:hover{
+						background-color: #c9302c;
+					}
+				}
+			}
+		}
+	}
+}
