@@ -86,7 +86,6 @@ export default class Ajax {
 		let formData = new FormData();
 		for (let name in data) if (data.hasOwnProperty(name)) formData.append(name, data[name]);
 		this.payload = formData;
-		this.contentType = 'application/x-www-form-urlencoded';
 		return this;
 	}
 	/**
@@ -96,6 +95,7 @@ export default class Ajax {
 	 */
 	upload(data, files) {
 		this.post(data);
+		this.contentType = 'multipart/form-data';
 		if (!(files instanceof Array)) files = [files];
 		files.forEach((file) => this.payload.append('file', file, file.name));
 		return this;
