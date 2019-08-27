@@ -1,0 +1,9 @@
+{
+  "name": "zengular",
+  "author": {
+    "name": "Gergely Laborci"
+  },
+  "dependencies": {
+    "twig": "^1.12.0"
+  }
+}
