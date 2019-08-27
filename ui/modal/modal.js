@@ -1,4 +1,4 @@
-import './modal.less';
+import './style.less';
 
 export default class Modal{
 

@@ -1,4 +1,4 @@
-import './contextmenu.less';
+import './style.less';
 import ContextmenuItem from './contextmenu-item';
 
 export default class Contextmenu{
