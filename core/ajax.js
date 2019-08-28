@@ -1,5 +1,4 @@
 /**
- *
  * @property {XMLHttpRequest} xhr
  * @property {string} url
  * @property {*} payload
