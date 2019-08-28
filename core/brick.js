@@ -10,221 +10,238 @@ import AppEvent    from "./app-event";
  */
 export default class Brick {
 
-    /**
-     * @param {string} tag
-     * @param {Function} twig
-     */
-    static register(tag, twig = null) {
-        return (target) => {
-            target.tag = tag;
-            target.twig = twig;
-            this.setDefaultOptions(target);
-            registry.register(target);
-        };
-    }
+	/**
+	 * @param {string} tag
+	 * @param {Function} twig
+	 */
+	static register(tag, twig = null) {
+		return (target) => {
+			target.tag = tag;
+			target.twig = twig;
+			this.setDefaultOptions(target);
+			registry.register(target);
+		};
+	}
 
-    /**
-     * @param {typeof Brick} target
-     * @param {string} option
-     * @param {*} value
-     */
-    static setOption(target, option, value = null) {
-        this.setDefaultOptions(target);
-        target.options[option] = value;
-    }
+	/**
+	 * @param {typeof Brick} target
+	 * @param {string} option
+	 * @param {*} value
+	 */
+	static setOption(target, option, value = null) {
+		this.setDefaultOptions(target);
+		target.options[option] = value;
+	}
 
-    /**
-     * @param {typeof Brick} target
-     */
-    static setDefaultOptions(target) {
-        if (typeof target.options === 'undefined') target.options = {
-            renderOnConstruct: true,
-            cleanOnConstruct: true,
-            observeAttributes: false,
-            observedAttributes: false,
-            initializeSubBricksOnRender: false,
-            rootCssClasses: []
-        };
-    }
+	/**
+	 * @param {typeof Brick} target
+	 */
+	static setDefaultOptions(target) {
+		if (typeof target.options === 'undefined') target.options = {
+			renderOnConstruct: true,
+			cleanOnConstruct: true,
+			observeAttributes: false,
+			observedAttributes: false,
+			initializeSubBricksOnRender: false,
+			rootCssClasses: []
+		};
+	}
 
-    /**
-     * @param {boolean} value
-     * @returns {Function}
-     */
-    static cleanOnConstruct(value = true) { return (target) => { this.setOption(target, 'cleanOnConstruct', value); }; }
+	/**
+	 * @param {boolean} value
+	 * @returns {Function}
+	 */
+	static cleanOnConstruct(value = true) { return (target) => { this.setOption(target, 'cleanOnConstruct', value); }; }
 
-    /**
-     * @param {boolean} value
-     * @returns {Function}
-     */
-    static renderOnConstruct(value = true) { return (target) => { this.setOption(target, 'renderOnConstruct', value); }; }
+	/**
+	 * @param {boolean} value
+	 * @returns {Function}
+	 */
+	static renderOnConstruct(value = true) { return (target) => { this.setOption(target, 'renderOnConstruct', value); }; }
 
-    /**
-     * @param {boolean} value
-     * @returns {Function}
-     */
-    static registerSubBricksOnRender(value = true) { return (target) => { this.setOption(target, 'registerSubBricksOnRender', value); }; }
-    /**
-     * @param {string | Array<string>} value
-     * @returns {Function}
-     */
-    static addClass(value) {return (target) => { this.setOption(target, 'rootCssClasses', typeof value === 'string' ? [value] : value);}; }
-    /**
-     * @param {boolean} value
-     * @param {null | Array<string>} attributes
-     * @returns {Function}
-     */
-    static observeAttributes(value, attributes = null) {
-        return (target) => {
-            this.setOption(target, 'observeAttributes', value);
-            if (attributes) {
-                this.setOption(target, 'observedAttributes', attributes);
-            }
-        };
-    }
+	/**
+	 * @param {boolean} value
+	 * @returns {Function}
+	 */
+	static registerSubBricksOnRender(value = true) { return (target) => { this.setOption(target, 'registerSubBricksOnRender', value); }; }
+	/**
+	 * @param {string | Array<string>} value
+	 * @returns {Function}
+	 */
+	static addClass(value) {return (target) => { this.setOption(target, 'rootCssClasses', typeof value === 'string' ? [value] : value);}; }
+	/**
+	 * @param {boolean} value
+	 * @param {null | Array<string>} attributes
+	 * @returns {Function}
+	 */
+	static observeAttributes(value, attributes = null) {
+		return (target) => {
+			this.setOption(target, 'observeAttributes', value);
+			if (attributes) {
+				this.setOption(target, 'observedAttributes', attributes);
+			}
+		};
+	}
 
-    /**
-     * @returns {string}
-     */
-    static get selector() {return `[is="${this.tag}"]`;}
+	/**
+	 * @returns {string}
+	 */
+	static get selector() {return `[is="${this.tag}"]`;}
 
-    /**
-     *
-     * @param {string} tag
-     * @param {boolean} initialize
-     * @returns {HTMLElement}
-     */
-    static create(tag = 'div', initialize = false) {
-        let element = document.createElement(tag);
-        element.setAttribute('is', this.tag);
-        if (initialize) new (this)(element);
-        return element;
-    }
 
-    /**
-     * @returns {Object}
-     */
-    get options() { return this.constructor.options; }
+	/**
+	 * @param {string} tag
+	 * @param {boolean} render
+	 * @returns {Promise<typeof Brick>}
+	 */
+	static create(tag = 'div', render = true) {
+		let brick = new (this)(this.createBrickElement(tag), false);
+		if(render) return brick.render();
+		else return Promise.resolve(brick);
+	}
 
-    /**
-     * @param {HTMLElement} root
-     */
-    constructor(root) {
-        this.root = root;
-        this.root.controller = this;
-        this.dataset = this.root.dataset;
+	/**
+	 * @param {string} tag
+	 * @returns {HTMLElement}
+	 */
+	static createBrickElement(tag = 'div'){
+		let element = document.createElement(tag);
+		element.setAttribute('is', this.tag);
+		return element;
+	}
 
-        this.options.rootCssClasses.forEach((cssclass) => {this.root.classList.add(cssclass);});
+	
+	/**
+	 * @returns {Object}
+	 */
+	get options() { return this.constructor.options; }
 
-        if (this.options.observeAttributes === true) {
-            let attr_mut_opts = {
-                attributes: true,
-                childList: false,
-                subtree: false,
-                attributeOldValue: true,
-                attributeFilter: undefined
-            };
-            if (this.options.observedAttributes) attr_mut_opts.attributeFilter = this.options.observedAttributes;
+	/**
+	 * @param {HTMLElement} root
+	 * @param {boolean} renderOnConstruct
+	 */
+	constructor(root, renderOnConstruct = true) {
+		this.root = root;
+		this.root.controller = this;
+		this.dataset = this.root.dataset;
 
-            (new MutationObserver((mutationsList) => {
-                mutationsList.forEach(mutation => {
-                    if (mutation.type === 'attributes') this.onAttributeChange(
-                        mutation.attributeName,
-                        this.root.getAttribute(mutation.attributeName),
-                        mutation.oldValue
-                    );
-                });
-            })).observe(this.root, attr_mut_opts);
-        }
+		this.options.rootCssClasses.forEach((cssclass) => {this.root.classList.add(cssclass);});
 
-        this.root.setAttribute('brick-initialized', 'yes');
+		if (this.options.observeAttributes === true) {
+			let attr_mut_opts = {
+				attributes: true,
+				childList: false,
+				subtree: false,
+				attributeOldValue: true,
+				attributeFilter: undefined
+			};
+			if (this.options.observedAttributes) attr_mut_opts.attributeFilter = this.options.observedAttributes;
 
-        this.onInitialize();
+			(new MutationObserver((mutationsList) => {
+				mutationsList.forEach(mutation => {
+					if (mutation.type === 'attributes') this.onAttributeChange(
+						mutation.attributeName,
+						this.root.getAttribute(mutation.attributeName),
+						mutation.oldValue
+					);
+				});
+			})).observe(this.root, attr_mut_opts);
+		}
 
-        if (this.options.cleanOnConstruct === true) while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
-        if (this.options.renderOnConstruct === true && this.constructor.twig) this.render().then(()=>{});
-    }
+		this.root.setAttribute('brick-initialized', 'yes');
 
-    /**
-     * @param {string} attr
-     * @param {string} value
-     * @param {string} oldValue
-     */
-    onAttributeChange(attr, value, oldValue) {
-        console.warn(`You should implement your onAttributeChange method in "${this.constructor.tag}" brick! \n attribute "${attr}" changed: ${oldValue} -> ${value}`);
-    };
+		this.onInitialize();
 
-    /**
-     * @param {Object} args
-     * @returns {Promise<void>}
-     */
-    render(args = {}) {
-        return Promise.resolve(this.beforeRender(args))
-            .then(() => Promise.resolve(this.createViewModel()))
-            .then(viewModel => this.renderTemplate(viewModel));
-    }
+		if (this.options.cleanOnConstruct === true) while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
+		if (this.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
+	}
 
-    /**
-     */
-	 onInitialize() {}
+	/**
+	 * @param {string} attr
+	 * @param {string} value
+	 * @param {string} oldValue
+	 */
+	onAttributeChange(attr, value, oldValue) {
+		console.warn(`You should implement your onAttributeChange method in "${this.constructor.tag}" brick! \n attribute "${attr}" changed: ${oldValue} -> ${value}`);
+	};
 
-	 /**
-     * @param {*} args
-     * @returns {*}
-     */
-	 beforeRender(args){return args;}
+	/**
+	 * @param {Object} args
+	 * @returns {Promise<typeof Brick>}
+	 */
+	render(args = {}) {
+		return Promise.resolve(this.beforeRender(args))
+		.then(() => Promise.resolve(this.createViewModel()))
+		.then(viewModel => this.renderTemplate(viewModel))
+		.then(() => this.onRender())
+		.then(() => this);
+	}
 
-    /**
-     * @returns {Object}
-     */
-	 createViewModel() { return {}; }
+	/**
+	 */
+	onInitialize() {}
 
-	 /**
-     */
-	 onRender() {}
+	/**
+	 * @param {*} args
+	 * @returns {*}
+	 */
+	beforeRender(args) {return args;}
 
-    /**
-     * @param {Object} viewModel
-     */
-	 renderTemplate(viewModel) {
-        let root = this.root;
-        let twig = this.constructor.twig;
-        let template = document.createElement('template');
-        let content = '';
-        if (typeof twig === 'function') content = twig(viewModel);
-        if (typeof twig === 'string') content = Twig.twig({data: twig}).render(viewModel, {}, false);
+	/**
+	 * @returns {Object}
+	 */
+	createViewModel() { return {}; }
 
-        template.innerHTML = content;
-        while (root.firstChild) root.removeChild(root.firstChild);
-        root.appendChild(template.content.cloneNode(true));
-        if (this.options.registerSubBricksOnRender) registry.initializeElements(this.root);
-        this.onRender();
-    }
+	/**
+	 */
+	onRender() {}
 
-    /**
-     * @param {string} selector
-     * @param {Function} func
-     * @returns {BrickFinder}
-     */
-	 $(selector, func = null) { return new BrickFinder(selector, this.root, this, func); }
+	/**
+	 * @param {Object} viewModel
+	 * @returns {Promise}
+	 */
+	renderTemplate(viewModel) {
+		let root = this.root;
+		let twig = this.constructor.twig;
+		let template = document.createElement('template');
+		let content = '';
+		if (typeof twig === 'function') content = twig(viewModel);
+		if (typeof twig === 'string') content = Twig.twig({data: twig}).render(viewModel, {}, false);
 
-    /**
-     * @param {string} role
-     * @param {Function} func
-     * @returns {BrickFinder}
-     */
-    $$(role, func = null) { return new BrickFinder('[\\(' + role + '\\)]', this.root, this, func);}
+		template.innerHTML = content;
+		while (root.firstChild) root.removeChild(root.firstChild);
+		root.appendChild(template.content.cloneNode(true));
+		if (this.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
+		return Promise.resolve();
+	}
 
-    /**
-     * @param {string | Array<string>} event
-     * @param {Function} handler
-     */
-	 listen(event, handler) { AppEvent.listen(event, handler, this.root); }
+	/**
+	 * @param {string} selector
+	 * @param {Function} func
+	 * @returns {BrickFinder}
+	 */
+	$(selector, func = null) { return new BrickFinder(selector, this.root, this, func); }
 
-    /**
-     * @param {string} event
-     * @param {*} data
-     * @param {{bubbles:boolean, cancelable: boolean}} options
-     */
-	 fire(event, data= null, options = {bubbles: true, cancelable: true}) { AppEvent.fire(event, data, options, this.root); }
+	/**
+	 * @param {string} role
+	 * @param {Function} func
+	 * @returns {BrickFinder}
+	 */
+	$$(role, func = null) { return new BrickFinder('[\\(' + role + '\\)]', this.root, this, func);}
+
+	/**
+	 * @param {string | Array<string>} event
+	 * @param {Function} handler
+	 */
+	listen(event, handler) { AppEvent.listen(event, handler, this.root); }
+
+	/**
+	 * @param {string} event
+	 * @param {*} data
+	 * @param {{bubbles:boolean, cancelable: boolean}} options
+	 */
+	fire(event, data = null, options = {
+		bubbles: true,
+		cancelable: true
+	}) { AppEvent.fire(event, data, options, this.root); }
 }

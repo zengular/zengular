@@ -3,9 +3,16 @@ import AppEvent from "./app-event";
 
 export default class Application {
 
-	constructor(run=true) {
+	constructor(run = true, initializeBrickRegistry = true) {
+		this.initialize();
+		if (initializeBrickRegistry) this.initializeBrickRegistry();
+		if (run) this.run();
+	}
+
+	initialize(){}
+
+	initializeBrickRegistry(){
 		registry.initialize();
-		if(run)this.run();
 	}
 
 	run() {};
@@ -21,5 +28,9 @@ export default class Application {
 	 * @param {*} data
 	 * @param {{bubbles:boolean, cancelable: boolean}} options
 	 */
-	fire(event, data, options = {bubbles: true, cancelable: true}) { AppEvent.fire(event, data, options, document.body); }
+	fire(event, data, options = {
+		bubbles: true,
+		cancelable: true
+	}) { AppEvent.fire(event, data, options, document.body); }
 }
+
