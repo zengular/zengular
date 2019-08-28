@@ -110,12 +110,6 @@ export default class Brick {
 		return element;
 	}
 
-	
-	/**
-	 * @returns {Object}
-	 */
-	get options() { return this.constructor.options; }
-
 	/**
 	 * @param {HTMLElement} root
 	 * @param {boolean} renderOnConstruct
@@ -125,9 +119,9 @@ export default class Brick {
 		this.root.controller = this;
 		this.dataset = this.root.dataset;
 
-		this.options.rootCssClasses.forEach((cssclass) => {this.root.classList.add(cssclass);});
+		this.constructor.options.rootCssClasses.forEach((cssclass) => {this.root.classList.add(cssclass);});
 
-		if (this.options.observeAttributes === true) {
+		if (this.constructor.options.observeAttributes === true) {
 			let attr_mut_opts = {
 				attributes: true,
 				childList: false,
@@ -135,7 +129,7 @@ export default class Brick {
 				attributeOldValue: true,
 				attributeFilter: undefined
 			};
-			if (this.options.observedAttributes) attr_mut_opts.attributeFilter = this.options.observedAttributes;
+			if (this.constructor.options.observedAttributes) attr_mut_opts.attributeFilter = this.constructor.options.observedAttributes;
 
 			(new MutationObserver((mutationsList) => {
 				mutationsList.forEach(mutation => {
@@ -152,8 +146,8 @@ export default class Brick {
 
 		this.onInitialize();
 
-		if (this.options.cleanOnConstruct === true) while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
-		if (this.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
+		if (this.constructor.options.cleanOnConstruct === true) while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
+		if (this.constructor.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
 	}
 
 	/**
@@ -211,7 +205,7 @@ export default class Brick {
 		template.innerHTML = content;
 		while (root.firstChild) root.removeChild(root.firstChild);
 		root.appendChild(template.content.cloneNode(true));
-		if (this.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
+		if (this.constructor.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
 		return Promise.resolve();
 	}
 
