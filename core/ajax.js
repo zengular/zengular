@@ -1,4 +1,5 @@
 /**
+ *
  * @property {XMLHttpRequest} xhr
  * @property {string} url
  * @property {*} payload
@@ -108,7 +109,7 @@ export default class Ajax {
 			this.xhr.send(this.payload);
 		});
 	}
-	
+
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
