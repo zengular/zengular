@@ -109,6 +109,7 @@ export default class Ajax {
 		});
 	}
 
+	
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
