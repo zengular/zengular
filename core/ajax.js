@@ -108,7 +108,6 @@ export default class Ajax {
 			this.xhr.send(this.payload);
 		});
 	}
-
 	
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
