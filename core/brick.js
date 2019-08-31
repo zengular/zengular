@@ -146,7 +146,7 @@ export default class Brick {
 
 		this.onInitialize();
 
-		if (this.constructor.options.cleanOnConstruct === true) while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
+		if (this.constructor.options.cleanOnConstruct === true) this.clearContent();
 		if (this.constructor.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
 	}
 
@@ -203,7 +203,7 @@ export default class Brick {
 		if (typeof twig === 'string') content = Twig.twig({data: twig}).render(viewModel, {}, false);
 
 		template.innerHTML = content;
-		while (root.firstChild) root.removeChild(root.firstChild);
+		this.clearContent()
 		root.appendChild(template.content.cloneNode(true));
 		if (this.constructor.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
 		return Promise.resolve();
@@ -238,4 +238,8 @@ export default class Brick {
 		bubbles: true,
 		cancelable: true
 	}) { AppEvent.fire(event, data, options, this.root); }
+
+	clearContent(node = this.root){
+		while (node.firstChild) this.root.removeChild(node.firstChild);
+	}
 }
