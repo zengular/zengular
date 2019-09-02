@@ -10,18 +10,9 @@ import AppEvent    from "./app-event";
  */
 export default class Brick {
 
-	/**
-	 * @param {string} tag
-	 * @param {Function} twig
-	 */
-	static register(tag, twig = null) {
-		return (target) => {
-			target.tag = tag;
-			target.twig = twig;
-			this.setDefaultOptions(target);
-			registry.register(target);
-		};
-	}
+
+	/* --- BRICK OPTIONS ----*/
+
 
 	/**
 	 * @param {typeof Brick} target
@@ -42,8 +33,29 @@ export default class Brick {
 			cleanOnConstruct: true,
 			observeAttributes: false,
 			observedAttributes: false,
-			initializeSubBricksOnRender: false,
+			registerSubBricksOnRender: false,
 			rootCssClasses: []
+		};
+	}
+
+
+
+
+	/* --- DECORATORS ----*/
+
+
+
+
+	/**
+	 * @param {string} tag
+	 * @param {Function} twig
+	 */
+	static register(tag, twig = null) {
+		return (target) => {
+			target.tag = tag;
+			target.twig = twig;
+			this.setDefaultOptions(target);
+			registry.register(target);
 		};
 	}
 
@@ -83,6 +95,13 @@ export default class Brick {
 		};
 	}
 
+
+
+	/* --- STATIC ----*/
+
+
+
+
 	/**
 	 * @returns {string}
 	 */
@@ -109,6 +128,14 @@ export default class Brick {
 		element.setAttribute('is', this.tag);
 		return element;
 	}
+
+
+
+
+	/* --- CONSTRUCTOR ----*/
+
+
+
 
 	/**
 	 * @param {HTMLElement} root
@@ -151,6 +178,14 @@ export default class Brick {
 	}
 
 	/**
+	 */
+	onInitialize() {
+
+	}
+
+
+
+	/**
 	 * @param {string} attr
 	 * @param {string} value
 	 * @param {string} oldValue
@@ -158,6 +193,9 @@ export default class Brick {
 	onAttributeChange(attr, value, oldValue) {
 		console.warn(`You should implement your onAttributeChange method in "${this.constructor.tag}" brick! \n attribute "${attr}" changed: ${oldValue} -> ${value}`);
 	};
+
+	/* --- RENDER ----*/
+
 
 	/**
 	 * @param {Object} args
@@ -171,9 +209,7 @@ export default class Brick {
 		.then(() => this);
 	}
 
-	/**
-	 */
-	onInitialize() {}
+
 
 	/**
 	 * @param {*} args
@@ -208,6 +244,9 @@ export default class Brick {
 		if (this.constructor.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
 		return Promise.resolve();
 	}
+
+
+
 
 	/**
 	 * @param {string} selector

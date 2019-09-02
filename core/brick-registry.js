@@ -31,7 +31,7 @@ class BrickRegistry {
 	 */
 	initialize(root = document.body) {
 		this.domObserver.observe(root, {attributes: false, childList: true, subtree: true});
-		this.initializeElements();
+		return this.initializeElements();
 	}
 
 	/**

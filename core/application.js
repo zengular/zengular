@@ -1,19 +1,15 @@
-import registry from "./brick-registry";
+import brickRegistry from "./brick-registry";
 import AppEvent from "./app-event";
 
 export default class Application {
 
 	constructor(run = true, initializeBrickRegistry = true) {
-		this.initialize();
-		if (initializeBrickRegistry) this.initializeBrickRegistry();
-		if (run) this.run();
+		Promise.resolve(this.initialize())
+		.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())
+		.then(() => { if (run) this.run();});
 	}
 
-	initialize(){}
-
-	initializeBrickRegistry(){
-		registry.initialize();
-	}
+	initialize() {}
 
 	run() {};
 

@@ -28,6 +28,11 @@ export default class BrickFinder {
         return (element && element.parentElement.closest('[is]').controller !== this.controller) ? null : element;
     }
 
+    get brick(){
+        let element = this.node;
+        return (element && element.hasOwnProperty('controller')) ? element.controller : null;
+    }
+
     /**
      * @param {Function} func
      * @returns {Element | null}
