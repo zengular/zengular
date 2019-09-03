@@ -54,7 +54,7 @@ export default class Ajax {
 		let request = this.post(url, data, onProgress);
 		this.contentType = 'multipart/form-data';
 		if (!(files instanceof Array)) files = [files];
-		files.forEach((file) => this.payload.append('file', file, file.name));
+		files.forEach((file) => request.payload.append('file', file, file.name));
 		return request;
 	}
 
