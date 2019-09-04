@@ -24,8 +24,12 @@ export default class BrickFinder {
      * @returns {Element | null}
      */
     get node() {
-        let element = this.queryRoot.querySelector(this.selector);
-        return (element && element.parentElement.closest('[is]').controller !== this.controller) ? null : element;
+        if(this.selector === null) return this.queryRoot;
+        let elements = this.queryRoot.querySelectorAll(this.selector);
+        for(let i in elements){
+            if(elements[i]?.parentElement?.closest('[is]').controller === this.controller) return elements[i];
+        }
+        return null;
     }
 
     get brick(){
@@ -47,6 +51,7 @@ export default class BrickFinder {
      * @returns {Element[]}
      */
     get nodes() {
+        if(this.selector === null) return [this.queryRoot];
         let elements = this.queryRoot.querySelectorAll(this.selector);
         return Array.prototype.filter.call(elements, element => element.parentNode.closest('[is]').controller === this.controller);
     }

@@ -142,7 +142,7 @@ export default class Brick {
 	 * @param {boolean} renderOnConstruct
 	 */
 	constructor(root, renderOnConstruct = true) {
-		this.root = root;
+		this.root = this.eventSource = root;
 		this.root.controller = this;
 		this.dataset = this.root.dataset;
 
@@ -201,7 +201,7 @@ export default class Brick {
 	 * @param {Object} args
 	 * @returns {Promise<typeof Brick>}
 	 */
-	render(args = {}) {
+	render(args = undefined) {
 		return Promise.resolve(this.beforeRender(args))
 		.then(() => Promise.resolve(this.createViewModel()))
 		.then(viewModel => this.renderTemplate(viewModel))
@@ -249,11 +249,11 @@ export default class Brick {
 
 
 	/**
-	 * @param {string} selector
+	 * @param {string|null} selector
 	 * @param {Function} func
 	 * @returns {BrickFinder}
 	 */
-	$(selector, func = null) { return new BrickFinder(selector, this.root, this, func); }
+	$(selector=null, func = null) { return new BrickFinder(selector, this.root, this, func); }
 
 	/**
 	 * @param {string} role
@@ -276,7 +276,7 @@ export default class Brick {
 	fire(event, data = null, options = {
 		bubbles: true,
 		cancelable: true
-	}) { AppEvent.fire(event, data, options, this.root); }
+	}) { AppEvent.fire(event, data, options, this.eventSource); }
 
 	clearContent(node = this.root){
 		while (node.firstChild) this.root.removeChild(node.firstChild);
