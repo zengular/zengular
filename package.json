@@ -1,8 +1,8 @@
 {
   "name": "zengular",
-  "author": {
-    "name": "Gergely Laborci"
-  },
+  "author": "Gergely Laborci",
+  "version": "2.0.0",
+  "license": "MIT",
   "dependencies": {
     "twig": "^1.12.0"
   }
