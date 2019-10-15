@@ -1,12 +1,17 @@
 import brickRegistry from "./brick-registry";
-import AppEvent from "./app-event";
+import AppEvent      from "./app-event";
 
 export default class Application {
 
+	static instance = null;
+
 	constructor(run = true, initializeBrickRegistry = true) {
-		Promise.resolve(this.initialize())
-		.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())
-		.then(() => { if (run) this.run();});
+		this.constructor.instance = this;
+		window.addEventListener('load',()=> {
+			Promise.resolve(this.initialize())
+			.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())
+			.then(() => run ? this.run() : null);
+		});
 	}
 
 	initialize() {}

@@ -1,9 +1,43 @@
 {
-  "name": "zengular",
-  "author": "Gergely Laborci",
-  "version": "2.0.1",
-  "license": "MIT",
+  "_args": [
+    [
+      "zengular@2.0.1",
+      "/Users/elvis/dev/htdocs/gmrnxt"
+    ]
+  ],
+  "_from": "zengular@2.0.4",
+  "_id": "zengular@2.0.4",
+  "_inBundle": false,
+  "_integrity": "sha512-CB4xo0fSMwHqrYChZdkmJrhMyF0F7Pylb7zIpziPFEJfYDPDzRN0O242auoHkwKzvTzGpsUDyI6H9rQ/rlWsRA==",
+  "_location": "/zengular",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "zengular@2.0.4",
+    "name": "zengular",
+    "escapedName": "zengular",
+    "rawSpec": "2.0.4",
+    "saveSpec": null,
+    "fetchSpec": "2.0.4"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/zengular/-/zengular-2.0.4.tgz",
+  "_shasum": "9758c63bb7e98cbf64be18a44238d17beee98f0c",
+  "_spec": "zengular@2.0.4",
+  "_where": "/Users/elvis/dev/htdocs/gmrnxt",
+  "author": {
+    "name": "Gergely Laborci"
+  },
+  "bundleDependencies": false,
   "dependencies": {
     "twig": "^1.12.0"
-  }
+  },
+  "deprecated": false,
+  "license": "MIT",
+  "name": "zengular",
+  "version": "2.0.4"
 }
