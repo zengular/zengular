@@ -50,7 +50,7 @@ export default class Ajax {
 	 * @param {Function} onProgress
 	 * @returns {Ajax}
 	 */
-	static upload(url, data = null, files=null, onProgress = null) {
+	static upload(url, data = null, files = null, onProgress = null) {
 		let request = this.post(url, data, onProgress);
 		this.contentType = 'multipart/form-data';
 		if (!(files instanceof Array)) files = [files];
@@ -95,10 +95,19 @@ export default class Ajax {
 	}
 
 	/**
+	 * @param {number} timeout
+	 * @returns {Ajax}
+	 */
+	timeout(timeout) {
+		this.xhr.timeout = timeout;
+		return this;
+	}
+
+	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
 	promise(responseType = null) {
-		if(responseType !== null) this.xhr.responseType = responseType;
+		if (responseType !== null) this.xhr.responseType = responseType;
 		return new Promise((resolve, reject) => {
 			this.xhr.onreadystatechange = () => { if (this.xhr.readyState === 4) resolve(this.xhr);};
 			this.xhr.onerror = (event) => { reject(event); };
@@ -112,36 +121,36 @@ export default class Ajax {
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get get(){return this.promise('');}
+	get get() {return this.promise('');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getString(){return this.promise('');}
+	get getString() {return this.promise('');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getJson(){return this.promise('json');}
+	get getJson() {return this.promise('json');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getArrayBuffer(){return this.promise('arraybuffer');}
+	get getArrayBuffer() {return this.promise('arraybuffer');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getBlob(){return this.promise('blob');}
+	get getBlob() {return this.promise('blob');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getDocument(){return this.promise('document');}
+	get getDocument() {return this.promise('document');}
 
 	/**
 	 * @returns {Promise<XMLHttpRequest>}
 	 */
-	get getText(){return this.promise('text');}
+	get getText() {return this.promise('text');}
 
 }

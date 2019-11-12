@@ -39,11 +39,7 @@ export default class Brick {
 	}
 
 
-
-
 	/* --- DECORATORS ----*/
-
-
 
 
 	/**
@@ -52,6 +48,8 @@ export default class Brick {
 	 */
 	static register(tag, twig = null) {
 		return (target) => {
+			if (typeof target.tag === "undefined") target.tag = "";
+			target.tag = target.tag + tag;
 			target.tag = tag;
 			target.twig = twig;
 			this.setDefaultOptions(target);
@@ -96,10 +94,7 @@ export default class Brick {
 	}
 
 
-
 	/* --- STATIC ----*/
-
-
 
 
 	/**
@@ -115,7 +110,7 @@ export default class Brick {
 	 */
 	static create(tag = 'div', render = true) {
 		let brick = new (this)(this.createBrickElement(tag), false);
-		if(render) return brick.render();
+		if (render) return brick.render();
 		else return Promise.resolve(brick);
 	}
 
@@ -123,18 +118,14 @@ export default class Brick {
 	 * @param {string} tag
 	 * @returns {HTMLElement}
 	 */
-	static createBrickElement(tag = 'div'){
+	static createBrickElement(tag = 'div') {
 		let element = document.createElement(tag);
 		element.setAttribute('is', this.tag);
 		return element;
 	}
 
 
-
-
 	/* --- CONSTRUCTOR ----*/
-
-
 
 
 	/**
@@ -173,6 +164,7 @@ export default class Brick {
 
 		this.onInitialize();
 
+
 		if (this.constructor.options.cleanOnConstruct === true) this.clearContent();
 		if (this.constructor.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
 	}
@@ -182,7 +174,6 @@ export default class Brick {
 	onInitialize() {
 
 	}
-
 
 
 	/**
@@ -203,12 +194,11 @@ export default class Brick {
 	 */
 	render(args = undefined) {
 		return Promise.resolve(this.beforeRender(args))
-		.then(() => Promise.resolve(this.createViewModel()))
-		.then(viewModel => this.renderTemplate(viewModel))
-		.then(() => this.onRender())
-		.then(() => this);
+			.then(() => Promise.resolve(this.createViewModel()))
+			.then(viewModel => this.renderTemplate(viewModel))
+			.then(() => this.onRender())
+			.then(() => this);
 	}
-
 
 
 	/**
@@ -246,14 +236,12 @@ export default class Brick {
 	}
 
 
-
-
 	/**
 	 * @param {string|null} selector
 	 * @param {Function} func
 	 * @returns {BrickFinder}
 	 */
-	$(selector=null, func = null) { return new BrickFinder(selector, this.root, this, func); }
+	$(selector = null, func = null) { return new BrickFinder(selector, this.root, this, func); }
 
 	/**
 	 * @param {string} role
@@ -276,9 +264,14 @@ export default class Brick {
 	fire(event, data = null, options = {
 		bubbles: true,
 		cancelable: true
-	}) { AppEvent.fire(event, data, options, this.eventSource); }
+	}) {
+		AppEvent.fire(event, data, options, this.eventSource);
+	}
 
-	clearContent(node = this.root){
+	clearContent(node = this.root) {
 		while (node.firstChild) this.root.removeChild(node.firstChild);
 	}
+
+	requestAnimationFrame() { return new Promise(resolve => window.requestAnimationFrame(resolve));}
+	wait(ms) { return new Promise(resolve => setTimeout(() => resolve(ms), ms)); }
 }

@@ -29,7 +29,7 @@ class BrickRegistry {
 	/**
 	 * @param {HTMLElement} root
 	 */
-	initialize(root = document.body) {
+	initialize(root = document) {
 		this.domObserver.observe(root, {attributes: false, childList: true, subtree: true});
 		return this.initializeElements();
 	}
@@ -37,7 +37,7 @@ class BrickRegistry {
 	/**
 	 * @param {HTMLElement} scope
 	 */
-	initializeElements(scope = document.body) {
+	initializeElements(scope = document) {
 		let renderQueue = []
 		scope.querySelectorAll('[is]:not([brick-initialized])').forEach(element => {
 			let tag = element.getAttribute('is');
