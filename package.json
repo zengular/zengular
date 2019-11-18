@@ -1,41 +1,44 @@
 {
   "_args": [
     [
-      "zengular@2.0.8",
-      "/Users/elvis/dev/cordova/autoup"
+      "zengular@3.0.2",
+      "/Users/elvis/dev/htdocs/mik-wiki"
     ]
   ],
-  "_from": "zengular@2.0.8",
-  "_id": "zengular@2.0.8",
+  "_from": "zengular@3.0.3",
+  "_id": "zengular@3.0.3",
   "_inBundle": false,
-  "_integrity": "sha512-D1bxV8qZyYZ157hxn03Il4DbvBIILGrHqmG3x5AydxSM7YfyLO15Wj0KB0Z9ZiSjyEiMH3NVl+ipsifvfZa8Ow==",
+  "_integrity": "sha512-CzqPNAnr8at818bPLmmRB9LFwrBxS6nmEllNWE12Fw9+CznOYlKD4u8Aw+9rWLhZVTHIIjpq8q7YbImGquWAgA==",
   "_location": "/zengular",
   "_phantomChildren": {},
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "zengular@2.0.8",
+    "raw": "zengular@3.0.3",
     "name": "zengular",
     "escapedName": "zengular",
-    "rawSpec": "2.0.8",
+    "rawSpec": "3.0.3",
     "saveSpec": null,
-    "fetchSpec": "2.0.8"
+    "fetchSpec": "3.0.3"
   },
   "_requiredBy": [
+    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/zengular/-/zengular-2.0.8.tgz",
-  "_shasum": "f3e0e04501c6bc40e61ccff09e7e5962b929760b",
-  "_spec": "2.0.8",
-  "_where": "/Users/elvis/dev/cordova/autoup",
+  "_resolved": "https://registry.npmjs.org/zengular/-/zengular-3.0.3.tgz",
+  "_shasum": "1567219794080820abcfb2150b5bfe8d739e46aa",
+  "_spec": "zengular@3.0.3",
+  "_where": "/Users/elvis/Work/htdocs/mik-wiki",
   "author": {
     "name": "Gergely Laborci"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "twig": "^1.12.0"
   },
   "deprecated": false,
   "license": "MIT",
+  "main": "export.js",
   "name": "zengular",
-  "version": "2.0.11"
+  "version": "3.0.3"
 }
