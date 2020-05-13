@@ -31,7 +31,9 @@ export default class BrickFinder {
         }
         return null;
     }
-
+    /**
+     * @returns {Brick | null}
+     */
     get brick(){
         let element = this.node;
         return (element && element.hasOwnProperty('controller')) ? element.controller : null;
@@ -67,12 +69,17 @@ export default class BrickFinder {
     /**
      * @param {string | Array<string>} events
      * @param {Function} handler
+     * @param {number} debounce
      * @returns {BrickFinder}
      */
-    listen(events, handler) {
+    listen(events, handler, debounce = 0) {
         if (typeof events === 'string') events = [events];
         this.each((element) => {
             events.forEach(eventType => {
+                if(debounce !== 0 && typeof debounce === 'number'){
+                    let debouncer = new Debouncer(handler, debounce);
+                    handler = (event, target)=>debouncer.trigger(event, target);
+                }
                 element.addEventListener(eventType, event => handler(event, element));
             });
         });
@@ -90,6 +97,28 @@ export default class BrickFinder {
      * @param {Function} func
      * @returns {BrickFinder}
      */
-    filter(filter, func = null) {return new BrickFinder(this.selector + filter, this.queryRoot, this.controller, func);}
+    filter(filter, func = null) {
+        let bases = this.selector.split(',');
+        let filters = filter.split(',');
+        let selector = [];
+        for (let i in bases)for(let j in filters) selector.push(bases[i] + filters[j]);
+        selector = selector.join(',');
+        console.log(selector)
+        return new BrickFinder(selector, this.queryRoot, this.controller, func);
+    }
+
+}
+
+class Debouncer{
+
+    constructor(callback, wait) {
+        this.callback = callback;
+        this.wait = wait;
+    }
+
+    trigger(event, target){
+        if(this.timeout) clearTimeout(this.timeout)
+        this.timeout = setTimeout(()=>this.callback(event, target), this.wait);
+    }
 
 }

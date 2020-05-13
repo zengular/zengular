@@ -1,5 +1,5 @@
-import Brick from "./src/brick";
-import {router, Route} from "./src/router";
+import Brick       from "./src/brick";
 import Application from "./src/application";
+import decopt      from "zengular/src/decopt";
 
-export {Brick, router, Route, Application};
+export {Brick, Application, decopt};
