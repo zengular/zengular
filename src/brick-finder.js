@@ -103,7 +103,6 @@ export default class BrickFinder {
         let selector = [];
         for (let i in bases)for(let j in filters) selector.push(bases[i] + filters[j]);
         selector = selector.join(',');
-        console.log(selector)
         return new BrickFinder(selector, this.queryRoot, this.controller, func);
     }
 
