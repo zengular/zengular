@@ -18,7 +18,59 @@ export default class BrickFinder {
 		this.controller = controller;
 		this.queryRoot = scope;
 		if (func) this.each(func);
+		this.on = {
+			click: (handler, debounce = 0) => {return this.listen('click', handler, debounce);},
+			contextMenu: (handler, debounce = 0) => {return this.listen('contextmenu', handler, debounce);},
+			dblclick: (handler, debounce = 0) => {return this.listen('dblclick', handler, debounce);},
+			wheel: (handler, debounce = 0) => {return this.listen('wheel', handler, debounce);},
+			submit: (handler, debounce = 0) => {return this.listen('submit', handler, debounce);},
+			input: (handler, debounce = 0) => {return this.listen('input', handler, debounce);},
+			change: (handler, debounce = 0) => {return this.listen('change', handler, debounce);},
+			clipboard: {
+				paste: (handler, debounce = 0) => {return this.listen('paste', handler, debounce);},
+				cut: (handler, debounce = 0) => {return this.listen('cut', handler, debounce);},
+				copy: (handler, debounce = 0) => {return this.listen('copy', handler, debounce);}
+			},
+			touch: {
+				start: (handler, debounce = 0) => {return this.listen('touchstart', handler, debounce);},
+				end: (handler, debounce = 0) => {return this.listen('touchend', handler, debounce);},
+				move: (handler, debounce = 0) => {return this.listen('touchmove', handler, debounce);},
+				cancel: (handler, debounce = 0) => {return this.listen('touchcancel', handler, debounce);}
+			},
+			mouse: {
+				down: (handler, debounce = 0) => {return this.listen('mousedown', handler, debounce);},
+				enter: (handler, debounce = 0) => {return this.listen('mouseenter', handler, debounce);},
+				leave: (handler, debounce = 0) => {return this.listen('mouseleave', handler, debounce);},
+				over: (handler, debounce = 0) => {return this.listen('mouseover', handler, debounce);},
+				up: (handler, debounce = 0) => {return this.listen('mouseup', handler, debounce);},
+				click: (handler, debounce = 0) => {return this.listen('click', handler, debounce);},
+				contextMenu: (handler, debounce = 0) => {return this.listen('contextmenu', handler, debounce);},
+				dblclick: (handler, debounce = 0) => {return this.listen('dblclick', handler, debounce);},
+				wheel: (handler, debounce = 0) => {return this.listen('wheel', handler, debounce);}
+			},
+			key: {
+				down: (handler, debounce = 0) => {return this.listen('keydown', handler, debounce);},
+				press: (handler, debounce = 0) => {return this.listen('keypress', handler, debounce);},
+				up: (handler, debounce = 0) => {return this.listen('keyup', handler, debounce);}
+			},
+			focus: {
+				focus: (handler, debounce = 0) => {return this.listen('focus', handler, debounce);},
+				in: (handler, debounce = 0) => {return this.listen('focusin', handler, debounce);},
+				out: (handler, debounce = 0) => {return this.listen('focusout', handler, debounce);},
+				blur: (handler, debounce = 0) => {return this.listen('blur', handler, debounce);}
+			},
+			drag: {
+				drag: (handler, debounce = 0) => {return this.listen('drag', handler, debounce);},
+				end: (handler, debounce = 0) => {return this.listen('dragend', handler, debounce);},
+				enter: (handler, debounce = 0) => {return this.listen('dragenter', handler, debounce);},
+				leave: (handler, debounce = 0) => {return this.listen('dragleave', handler, debounce);},
+				over: (handler, debounce = 0) => {return this.listen('dragover', handler, debounce);},
+				start: (handler, debounce = 0) => {return this.listen('dragstart', handler, debounce);},
+				drop: (handler, debounce = 0) => {return this.listen('drop', handler, debounce);}
+			}
+		}
 	}
+
 
 	/**
 	 * @returns {Element | null}
