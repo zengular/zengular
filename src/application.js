@@ -6,7 +6,7 @@ export default class Application {
 	static instance = null;
 
 	constructor(run = true, initializeBrickRegistry = true) {
-		this.constructor.instance = this;
+		Application.instance = this;
 		window.addEventListener('load',()=> {
 			Promise.resolve(this.initialize())
 			.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())

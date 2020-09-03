@@ -5,30 +5,30 @@
       "/Users/elvis/Work/htdocs/gamer365"
     ]
   ],
-  "_from": "zengular@3.0.21",
-  "_id": "zengular@3.0.21",
+  "_from": "zengular@3.0.24",
+  "_id": "zengular@3.0.24",
   "_inBundle": false,
-  "_integrity": "sha512-PJFNweAynlwgD9Fl2KsUdiZ4t1xb4pyx+H3V7c3aBKHcWdobn69TcQBxUAw4AfZyXP+4TXguAOJWadVWVS9HQA==",
+  "_integrity": "sha512-5XHuvHwLFv5KpYRBMeVz1StYh/taZ2fp4C2kpKc1HhfzK44u9h91etjTfE0asxyXAG9GWYDJkMkqOrkZLlM4JQ==",
   "_location": "/zengular",
   "_phantomChildren": {},
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "zengular@3.0.21",
+    "raw": "zengular@3.0.24",
     "name": "zengular",
     "escapedName": "zengular",
-    "rawSpec": "3.0.21",
+    "rawSpec": "3.0.24",
     "saveSpec": null,
-    "fetchSpec": "3.0.21"
+    "fetchSpec": "3.0.24"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/zengular/-/zengular-3.0.21.tgz",
-  "_shasum": "e2b0db15a1fe4af4d11e8df1d96970f58d0a9004",
-  "_spec": "zengular@3.0.21",
-  "_where": "/Users/elvis/work/htdocs/mik/wiki",
+  "_resolved": "https://registry.npmjs.org/zengular/-/zengular-3.0.24.tgz",
+  "_shasum": "44a513ace516e0072121c751a849ae94055b61ac",
+  "_spec": "zengular@3.0.24",
+  "_where": "/Users/elvis/Work/htdocs/gamer365",
   "author": {
     "name": "Gergely Laborci"
   },
@@ -40,5 +40,5 @@
   "license": "MIT",
   "main": "export.js",
   "name": "zengular",
-  "version": "3.0.21"
+  "version": "3.0.24"
 }
