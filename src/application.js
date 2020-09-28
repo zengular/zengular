@@ -5,9 +5,9 @@ export default class Application {
 
 	static instance = null;
 
-	constructor(run = true, initializeBrickRegistry = true) {
+	constructor(run = true, initializeBrickRegistry = true, event = 'DOMContentLoaded') {
 		Application.instance = this;
-		window.addEventListener('load',()=> {
+		document.addEventListener(event, ()=> {
 			Promise.resolve(this.initialize())
 			.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())
 			.then(() => run ? this.run() : null);
