@@ -4,37 +4,47 @@ import BrickFinder from "./brick-finder";
 import AppEvent    from "./app-event";
 import decopt      from "./decopt";
 
+
 /**
  * @property {HTMLElement} root;
  * @property {DOMStringMap} dataset;
  * @method register
+ * @method attr
  */
-@decopt('register', function (t, f, tag, twig = null) {
-	if (f !== false) {
-		if (typeof t.tag === "undefined") t.tag = "";
-		t.tag = t.tag + tag;
-		t.tag = tag;
-		t.twig = twig;
-		registry.register(t);
-	}
-})
-@decopt('addClass', (t, f, classes = []) => t.options.rootCssClasses = typeof classes === 'string' ? [classes] : classes)
+@decopt('register', function (target, fn, tag, twig = null) {
+	if (typeof target.tag === "undefined") target.tag = "";
+	target.tag = target.tag + tag;
+	target.tag = tag;
+	target.twig = twig;
+	registry.register(target);
+}, false)
+@decopt('addClass', (t, f, ...classes) => t.options.rootCssClasses = classes)
 @decopt('renderOnConstruct', true)
 @decopt('cleanOnConstruct', true)
-@decopt('registerSubBricksOnRender', true)
-@decopt(['observedAttributes', 'observeAttributes'], false)
-@decopt(['listeners', 'listen'], (t, f, eventNames) => {
-	if (!Array.isArray(t.options.listeners)) t.options.listeners = [];
-	if (f !== false) {
-		if (!Array.isArray(t.options.listeners)) t.options.listeners = [];
-		eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
-		for (const eventName of eventNames) t.options.listeners.push({eventName, handlerName:f});
-	}
-})
+@decopt('initializeSubBricks', true)
+@decopt('listen:listeners',
+	(target, fn, ...events) => events.forEach(eventName => target.options.listeners.push({eventName, handlerName: fn})),
+	(target) => target.options.listeners = []
+)
+@decopt('attr',
+	(target, fn, ...attributes) => attributes.forEach(attribute => target.options.observedAttributes.push({
+		attribute,
+		handlerName: fn
+	})),
+	(target) => target.options.observedAttributes = []
+)
+
 export default class Brick {
-	/**
-	 * @returns {string}
-	 */
+
+	static register( tag, twig = null){}
+	static addClass(classes){}
+	static renderOnConstruct(render){}
+	static cleanOnConstruct(clean){}
+	static initializeSubBricks(init){}
+	static listen(events){}
+	static attr(attributes){}
+
+	/** @returns {string}*/
 	static get selector() {return `[is="${this.tag}"]`;}
 	/**
 	 * @param {string} tag
@@ -56,12 +66,14 @@ export default class Brick {
 		return element;
 	}
 
+
 	/* --- CONSTRUCTOR ----*/
 	/**
 	 * @param {HTMLElement} root
 	 * @param {boolean} renderOnConstruct
 	 */
 	constructor(root, renderOnConstruct = true) {
+
 		this.root = this.eventSource = root;
 		this.root.controller = this;
 		this.dataset = this.root.dataset;
@@ -75,28 +87,32 @@ export default class Brick {
 		}
 
 
-		if (this.constructor.options.observedAttributes !== false) {
-			let attr_mut_opts = {
-				attributes: true,
-				childList: false,
-				subtree: false,
-				attributeOldValue: true,
-				attributeFilter: undefined
-			};
-
-			if (Array.isArray(this.constructor.options.observedAttributes))  attr_mut_opts.attributeFilter = this.constructor.options.observedAttributes;
-
+		if (this.constructor.options.observedAttributes.length > 0) {
 			(new MutationObserver((mutationsList) => {
 				mutationsList.forEach(mutation => {
-					if (mutation.type === 'attributes') this.onAttributeChange(
-						mutation.attributeName,
-						this.root.getAttribute(mutation.attributeName),
-						mutation.oldValue
-					);
+					if (mutation.type === 'attributes') {
+						let fn = this.constructor.options.observedAttributes.find(item => item.attribute === mutation.attributeName).handlerName;
+						if (typeof this[fn] === "function") {
+							this[fn](
+								mutation.attributeName,
+								this.root.getAttribute(mutation.attributeName),
+								mutation.oldValue
+							);
+						}
+					}
 				});
-			})).observe(this.root, attr_mut_opts);
+			})).observe(
+				this.root,
+				{
+					attributes: true,
+					childList: false,
+					subtree: false,
+					attributeOldValue: true,
+					attributeFilter: this.constructor.options.observedAttributes.map((item) => item.attribute)
+				}
+			);
 		}
-		
+
 
 		this.root.setAttribute('brick-initialized', 'yes');
 		this.onInitialize();
@@ -107,14 +123,7 @@ export default class Brick {
 	 */
 	onInitialize() {
 	}
-	/**
-	 * @param {string} attr
-	 * @param {string} value
-	 * @param {string} oldValue
-	 */
-	onAttributeChange(attr, value, oldValue) {
-		console.warn(`You should implement your onAttributeChange method in "${this.constructor.tag}" brick! \n attribute "${attr}" changed: ${oldValue} -> ${value}`);
-	};
+
 	/* --- RENDER ----*/
 	/**
 	 * @param {Object} args
@@ -153,7 +162,7 @@ export default class Brick {
 		template.innerHTML = content;
 		this.clearContent()
 		root.appendChild(template.content.cloneNode(true));
-		if (this.constructor.options.registerSubBricksOnRender) return registry.initializeElements(this.root);
+		if (this.constructor.options.initializeSubBricks) return registry.initializeElements(this.root);
 		return Promise.resolve();
 	}
 	/**
@@ -167,9 +176,9 @@ export default class Brick {
 	 * @param {Function} func
 	 * @returns {BrickFinder}
 	 */
-	$$(role, func = null) { return new BrickFinder('[\\(' + role + '\\)], [actor\\:'+role+']', this.root, this, func);}
-	actor(role){
-		this.root.setAttribute('actor:'+role, "")
+	$$(role, func = null) { return new BrickFinder('[\\(' + role + '\\)], [actor\\:' + role + ']', this.root, this, func);}
+	actor(role) {
+		this.root.setAttribute('actor:' + role, "")
 	}
 	/**
 	 * @param {string | Array<string>} event
@@ -184,12 +193,8 @@ export default class Brick {
 	fire(event, data = null, options = {
 		bubbles: true,
 		cancelable: true
-	}) {
-		AppEvent.fire(event, data, options, this.eventSource);
-	}
-	clearContent(node = this.root) {
-		while (node.firstChild) this.root.removeChild(node.firstChild);
-	}
+	}) { AppEvent.fire(event, data, options, this.eventSource);}
+	clearContent(node = this.root) { while (node.firstChild) this.root.removeChild(node.firstChild);}
 	requestAnimationFrame() { return new Promise(resolve => window.requestAnimationFrame(resolve));}
 	wait(ms) { return new Promise(resolve => setTimeout(() => resolve(ms), ms)); }
 }

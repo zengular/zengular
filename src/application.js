@@ -1,6 +1,11 @@
 import brickRegistry from "./brick-registry";
 import AppEvent      from "./app-event";
+import decopt        from "zengular/src/decopt";
 
+@decopt('listen:listeners',
+	(target, fn, ...events) => events.forEach(eventName => target.options.listeners.push({eventName, handlerName: fn})),
+	(target) => target.options.listeners = []
+)
 export default class Application {
 
 	static instance = null;
@@ -8,6 +13,11 @@ export default class Application {
 	constructor(run = true, initializeBrickRegistry = true, event = 'DOMContentLoaded') {
 		Application.instance = this;
 		document.addEventListener(event, ()=> {
+			for (let event of this.constructor.options.listeners) {
+				const {eventName, handlerName} = event;
+				const handler = this[handlerName];
+				this.listen(eventName, (eventData) => handler.call(this, eventData));
+			}
 			Promise.resolve(this.initialize())
 			.then(() => initializeBrickRegistry ? brickRegistry.initialize() : Promise.resolve())
 			.then(() => run ? this.run() : null);
