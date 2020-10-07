@@ -1,5 +1,6 @@
 import Brick from "./brick";
 
+
 /**
  * @property {string} selector
  * @property {Brick} controller
@@ -77,7 +78,12 @@ export default class BrickFinder {
 	 */
 	get node() {
 		if (this.selector === null) return this.queryRoot;
-		let elements = this.queryRoot.querySelectorAll(this.selector);
+		let elements;
+		try {
+			elements = this.queryRoot.querySelectorAll(this.selector);
+		} catch (e) {
+			return null;
+		}
 		for (let i in elements) {
 			if (elements[i]?.parentElement?.closest('[is]').controller === this.controller) return elements[i];
 		}
@@ -106,7 +112,12 @@ export default class BrickFinder {
 	 */
 	get nodes() {
 		if (this.selector === null) return [this.queryRoot];
-		let elements = this.queryRoot.querySelectorAll(this.selector);
+		let elements;
+		try {
+			elements = this.queryRoot.querySelectorAll(this.selector);
+		} catch (e) {
+			return [];
+		}
 		return Array.prototype.filter.call(elements, element => element.parentNode.closest('[is]').controller === this.controller);
 	}
 	/**
