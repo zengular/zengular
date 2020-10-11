@@ -82,8 +82,7 @@ export default class Brick {
 
 		for (let event of this.constructor.options.listeners) {
 			const {eventName, handlerName} = event;
-			const handler = this[handlerName];
-			this.listen(eventName, (eventData) => handler.call(this, eventData));
+			this.listen(eventName, this[handlerName].bind(this));
 		}
 
 

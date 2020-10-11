@@ -1,4 +1,5 @@
-import Brick from "./brick";
+import Brick    from "./brick";
+import AppEvent from "zengular/src/app-event";
 
 /**
  * @property {Object<string, typeof Brick>} registry
