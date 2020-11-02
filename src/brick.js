@@ -10,6 +10,7 @@ import decopt      from "./decopt";
  * @property {DOMStringMap} dataset;
  * @method register
  * @method attr
+ * @property {string} tag
  */
 @decopt('register', function (target, fn, tag, twig = null) {
 	if (typeof target.tag === "undefined") target.tag = "";
@@ -36,33 +37,39 @@ import decopt      from "./decopt";
 
 export default class Brick {
 
-	static register( tag, twig = null){}
-	static addClass(classes){}
-	static renderOnConstruct(render){}
-	static cleanOnConstruct(clean){}
-	static initializeSubBricks(init){}
-	static listen(events){}
-	static attr(attributes){}
+	static register(tag, twig = null) {}
+	static addClass(classes) {}
+	static renderOnConstruct(render) {}
+	static cleanOnConstruct(clean) {}
+	static initializeSubBricks(init) {}
+	static listen(events) {}
+	static attr(attributes) {}
 
 	/** @returns {string}*/
 	static get selector() {return `[is="${this.tag}"]`;}
 	/**
 	 * @param {string} tag
 	 * @param {boolean} render
+	 * @param {Object} dataset
 	 * @returns {Promise<typeof Brick>}
 	 */
-	static create(htmlTag = 'div', render = true) {
-		let brick = new (this)(this.createBrickElement(htmlTag), false);
+	static create(htmlTag = 'div', render = true, dataset = {}, content = '') {
+		let brick = new (this)(this.createBrickElement(htmlTag, dataset), false);
 		if (render) return brick.render();
 		else return Promise.resolve(brick);
 	}
 	/**
 	 * @param {string} htmlTag
+	 * @param {Object} dataset
 	 * @returns {HTMLElement}
 	 */
-	static createBrickElement(htmlTag = 'div') {
+	static createBrickElement(htmlTag = 'div', dataset = {}, content = '') {
 		let element = document.createElement(htmlTag);
 		element.setAttribute('is', this.tag);
+		for (let property in dataset) {
+			element.dataset[property] = dataset[property]
+		}
+		element.innerHTML = content;
 		return element;
 	}
 
@@ -113,11 +120,17 @@ export default class Brick {
 		}
 
 
-		this.root.setAttribute('brick-initialized', 'yes');
-		this.onInitialize();
+		this.initialization = this.initialize();
+
 		if (this.constructor.options.cleanOnConstruct === true) this.clearContent();
-		if (this.constructor.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render().then(() => {});
+		if (this.constructor.options.renderOnConstruct === true && this.constructor.twig && renderOnConstruct) this.render();
 	}
+
+	initialize() {
+		this.root.setAttribute('brick-initialized', 'yes');
+		return Promise.resolve(this.onInitialize());
+	}
+
 	/**
 	 */
 	onInitialize() {
@@ -129,7 +142,7 @@ export default class Brick {
 	 * @returns {Promise<typeof Brick>}
 	 */
 	render(args = undefined) {
-		return Promise.resolve(this.beforeRender(args))
+		return this.initialization.then(this.beforeRender(args))
 			.then(() => Promise.resolve(this.createViewModel()))
 			.then(viewModel => this.renderTemplate(viewModel))
 			.then(() => this.onRender())
@@ -193,6 +206,13 @@ export default class Brick {
 		bubbles: true,
 		cancelable: true
 	}) { AppEvent.fire(event, data, options, this.eventSource);}
+
+	message(event, data, targets) {
+		if (targets instanceof BrickFinder) targets = targets.nodes;
+		if (!Array.isArray(targets)) targets = [targets];
+		targets.forEach(target => AppEvent.fire(event, data, {bubbles: false, cancelable: true}, target))
+	}
+
 	clearContent(node = this.root) { while (node.firstChild) this.root.removeChild(node.firstChild);}
 	requestAnimationFrame() { return new Promise(resolve => window.requestAnimationFrame(resolve));}
 	wait(ms) { return new Promise(resolve => setTimeout(() => resolve(ms), ms)); }
