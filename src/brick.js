@@ -133,8 +133,7 @@ export default class Brick {
 
 	/**
 	 */
-	onInitialize() {
-	}
+	onInitialize() {}
 
 	/* --- RENDER ----*/
 	/**
@@ -142,7 +141,8 @@ export default class Brick {
 	 * @returns {Promise<typeof Brick>}
 	 */
 	render(args = undefined) {
-		return this.initialization.then(this.beforeRender(args))
+		return this.initialization
+			.then(() => this.beforeRender(args))
 			.then(() => Promise.resolve(this.createViewModel()))
 			.then(viewModel => this.renderTemplate(viewModel))
 			.then(() => this.onRender())
