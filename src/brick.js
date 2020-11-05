@@ -145,7 +145,7 @@ export default class Brick {
 			.then(() => this.beforeRender(args))
 			.then(() => Promise.resolve(this.createViewModel()))
 			.then(viewModel => this.renderTemplate(viewModel))
-			.then(() => this.onRender())
+			.then((viewModel) => this.onRender(viewModel))
 			.then(() => this);
 	}
 	/**
@@ -174,8 +174,8 @@ export default class Brick {
 		template.innerHTML = content;
 		this.clearContent()
 		root.appendChild(template.content.cloneNode(true));
-		if (this.constructor.options.initializeSubBricks) return registry.initializeElements(this.root);
-		return Promise.resolve();
+		if (this.constructor.options.initializeSubBricks) return registry.initializeElements(this.root).then(()=>viewModel);
+		return Promise.resolve(viewModel);
 	}
 	/**
 	 * @param {string|null} selector
